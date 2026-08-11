@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b5d2x2v3nalvj"]
+
+[ext_resource type="Script" uid="uid://bta4qnyy05roh" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://d1o6qc61mesao" path="res://emulator.gd" id="2_0xm2m"]
+
+[node name="Main" type="Node2D" unique_id=1575625717]
+script = ExtResource("1_ig7tw")
+
+[node name="NESEmulator" type="Node" parent="." unique_id=1360718388]
+script = ExtResource("2_0xm2m")
+enable_trace_logger = true
+metadata/_custom_type_script = "uid://d1o6qc61mesao"
