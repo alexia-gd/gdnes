@@ -27,6 +27,42 @@ const OPCODE_NAMES: PackedStringArray = [
 	"CPX", "SBC", "NOP", "ISC", "CPX", "SBC", "INC", "ISC", "INX", "SBC", "NOP", "SBC", "CPX", "SBC", "INC", "ISC",
 	"BEQ", "SBC", "NOP", "ISC", "NOP", "SBC", "INC", "ISC", "SED", "SBC", "NOP", "ISC", "NOP", "SBC", "INC", "ISC",
 ]
+const OPCODE_OPERAND_COUNT: PackedByteArray = [
+	0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+	1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 2, 2, 2,
+	1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,
+]
+const OPCODE_ADDR_SYMBOL: PackedStringArray = [
+	"",   "(%s,X)", "",    "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "A", "#%s", "%s",   "%s",   "%s",   "%s",   # $00-$0F
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,X", "<%s,X", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,X", "%s,X", # $10-$1F
+	"%s", "(%s,X)", "",    "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "A", "#%s", "%s",   "%s",   "%s",   "%s",   # $20-$2F
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,X", "<%s,X", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,X", "%s,X", # $30-$3F
+	"",   "(%s,X)", "",    "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "A", "#%s", "%s",   "%s",   "%s",   "%s",   # $40-$4F
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,X", "<%s,X", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,X", "%s,X", # $50-$5F
+	"",   "(%s,X)", "",    "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "A", "#%s", "(%s)", "%s",   "%s",   "%s",   # $60-$6F
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,X", "<%s,X", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,X", "%s,X", # $70-$7F
+	"#%s","(%s,X)", "#%s", "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "",  "#%s", "%s",   "%s",   "%s",   "%s",   # $80-$8F
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,Y", "<%s,Y", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,Y", "%s,Y", # $90-$9F
+	"#%s","(%s,X)", "#%s", "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "",  "#%s", "%s",   "%s",   "%s",   "%s",   # $A0-$AF
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,Y", "<%s,Y", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,Y", "%s,Y", # $B0-$BF
+	"#%s","(%s,X)", "#%s", "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "",  "#%s", "%s",   "%s",   "%s",   "%s",   # $C0-$CF
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,X", "<%s,X", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,X", "%s,X", # $D0-$DF
+	"#%s","(%s,X)", "#%s", "(%s,X)", "<%s",   "<%s",   "<%s",   "<%s",   "",  "#%s", "",  "#%s", "%s",   "%s",   "%s",   "%s",   # $E0-$EF
+	"%s", "(%s),Y", "",    "(%s),Y", "<%s,X", "<%s,X", "<%s,X", "<%s,X", "",  "%s,Y","",  "%s,Y","%s,X", "%s,X", "%s,X", "%s,X", # $F0-$FF
+]
 
 @export var enable_trace_logger: bool = false
 
@@ -62,6 +98,7 @@ var rom: PackedByteArray
 
 var filepath: String
 var cpu_halted: bool = false
+var total_cycles: int = 0
 
 
 func _ready() -> void:
@@ -84,6 +121,7 @@ func reset() -> void:
 	
 	flag_interrupt_disable = true
 	stack_pointer = 0xFD
+	total_cycles = 0
 	
 	var pcl = read(0xFFFC)
 	var pch = read(0xFFFD)
@@ -95,6 +133,7 @@ func reset() -> void:
 
 
 func run() -> void:
+	tracelogger_header()
 	while not cpu_halted:
 		emulate_cpu()
 
@@ -116,11 +155,16 @@ func emulate_cpu() -> int:
 			var temp_high = read(0xFFFF)
 			program_counter = (temp_high << 8) | temp_low
 			cycles = 7
+		0x01: # ORA (Indirect,X)
+			read_operands_indirect_addressed()
+			op_ora(read(address_bus + x))
+			cycles = 6
 		0x02: # HLT
 			cpu_halted = true
 		0x05: # ORA Zero Page
 			read_operands_zero_page_addressed()
 			op_ora(read(address_bus))
+			cycles = 3
 		0x08: # PHP
 			push_flags_to_stack()
 			cycles = 3
@@ -137,16 +181,45 @@ func emulate_cpu() -> int:
 		0x0D: # ORA Absolute
 			read_operands_absolute_addressed()
 			op_ora(read(address_bus))
-			cycles = 5
+			cycles = 4
 		0x0E: # ASL Absolute
 			read_operands_absolute_addressed()
 			op_asl(address_bus, read(address_bus))
 			cycles = 5
 		0x10: # BPL
 			cycles = branch_on(not flag_negative)
+		0x11: # ORA (Indirect),Y
+			var old_boundary := address_bus & 0xFF00
+			read_operands_indirect_addressed()
+			op_ora(read(address_bus + y))
+			if old_boundary != address_bus & 0xFF00:
+				cycles = 6
+			else:
+				cycles = 5
+		0x15: # ORA Zero Page,X
+			read_operands_zero_page_addressed()
+			var temp := address_bus + x
+			op_asl(temp, read(temp))
+			cycles = 4
 		0x18: # CLC
 			flag_carry = false
 			cycles = 2
+		0x19: # ORA Absolute,Y
+			var old_boundary := address_bus & 0xFF00
+			read_operands_absolute_addressed()
+			op_ora(read(address_bus + y))
+			if old_boundary != address_bus & 0xFF00:
+				cycles = 5
+			else:
+				cycles = 4
+		0x1D: # ORA Absolute,X
+			var old_boundary := address_bus & 0xFF00
+			read_operands_absolute_addressed()
+			op_ora(read(address_bus + x))
+			if old_boundary != address_bus & 0xFF00:
+				cycles = 5
+			else:
+				cycles = 4
 		0x20: # JSR
 			var temp_low := read(program_counter)
 			program_counter += 1
@@ -391,6 +464,7 @@ func emulate_cpu() -> int:
 			push_warning("Unknown opcode 0x%s" % String.num_int64(opcode, 16, true))
 			pass
 	
+	total_cycles += cycles
 	return cycles
 
 
@@ -517,6 +591,14 @@ func read_operands_absolute_addressed() -> void:
 	program_counter += 1
 	address_bus = (temp_high << 8) | temp_low
 
+func read_operands_indirect_addressed() -> void:
+	var temp_low := read(program_counter)
+	program_counter += 1
+	var temp_high := read(program_counter)
+	program_counter += 1
+	address_bus = (temp_high << 8) | temp_low
+
+
 func branch_on(flag: bool) -> int:
 	var temp := read(program_counter)
 	program_counter += 1
@@ -555,24 +637,57 @@ func pull_flags_from_stack() -> void:
 	flag_negative = temp & 0x80
 
 
+func tracelogger_header() -> void:
+	if enable_trace_logger:
+		print("PC\t\tOP\t\t\t\t\t\tREGISTERS\t\t\t\tSTACK\tFLAGS\t\tCYCLE")
+
+
 func tracelogger(opcode: int) -> void:
 	if not enable_trace_logger:
 		return
 	
-	var line := "$" + String.num_int64(program_counter, 16, true).lpad(4, "0") \
-		+ "\t" + String.num_int64(opcode, 16, true).lpad(2, "0") \
-		+ "\t" + OPCODE_NAMES[opcode] \
-		+ "\t\tA: " + String.num_int64(a, 16, true).lpad(2, "0") \
-		+ "\tX: " + String.num_int64(x, 16, true).lpad(2, "0") \
-		+ "\tT: " + String.num_int64(y, 16, true).lpad(2, "0") \
-		+ "\tSP: " + String.num_int64(stack_pointer, 16, true).lpad(2, "0") \
-		+ "\t" \
-		+ ("N" if flag_negative else "n") \
+	var line := "$%04X\t%02X %s\t%s\tA: %02X\tX: %02X\tY: %02X\tSP: %02X\t%s\tCy: %d" % [
+		program_counter, opcode, _tl_operands(opcode),
+		_tl_op_string(opcode),
+		a, x, y, stack_pointer, 
+		("N" if flag_negative else "n") \
 		+ ("V" if flag_overflow else "v") \
 		+ "TB" \
 		+ ("D" if flag_decimal else "d") \
 		+ ("I" if flag_interrupt_disable else "i") \
 		+ ("Z" if flag_zero else "z") \
-		+ ("C" if flag_carry else "c")
+		+ ("C" if flag_carry else "c"),
+		total_cycles
+	]
 	
 	print(line)
+
+
+func _tl_operands(opcode: int) -> String:
+	var count := OPCODE_OPERAND_COUNT[opcode]
+	
+	match count:
+		1:
+			return String.num_int64(read(program_counter+1), 16, true).lpad(2, "0") \
+			+ "   "
+		2:
+			return String.num_int64(read(program_counter+1), 16, true).lpad(2, "0") \
+			+ " " + String.num_int64(read(program_counter+2), 16, true).lpad(2, "0")
+		_:
+			return "     "
+
+func _tl_op_string(opcode: int) -> String:
+	var opname := OPCODE_NAMES[opcode]
+	var count := OPCODE_OPERAND_COUNT[opcode]
+	var symbol := OPCODE_ADDR_SYMBOL[opcode]
+	
+	if not count:
+		return opname.rpad(9) if not symbol else "%s %s".rpad(9) % [opname, symbol]
+	
+	var addr: String
+	if count == 1:
+		addr = "$%02X" % read(program_counter+1)
+	else:
+		addr = "$%04X" % (read(program_counter+2) << 8 | read(program_counter+1))
+	
+	return "%s %s" % [opname, symbol % addr]

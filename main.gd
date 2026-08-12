@@ -1,7 +1,7 @@
 extends Node2D
 
 
-const PATH := "res://roms/4_TheStack.nes"
+const PATH := "res://roms/5_Instructions1.nes"
 
 @onready var emulator: NESEmulator = $NESEmulator
 
